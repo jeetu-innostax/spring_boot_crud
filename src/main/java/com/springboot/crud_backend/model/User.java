@@ -9,9 +9,19 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+    private Integer age;
     private String username;
     private String name;
     private String email;
+
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
     public Long getId() {
         return id;

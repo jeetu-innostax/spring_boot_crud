@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+
+@CrossOrigin("*")
 @RestController
+
 public class UserController {
 
     @Autowired
@@ -19,18 +22,33 @@ public class UserController {
         return userRepository.save(newUser);
     }
 
+//    @GetMapping("/user/age/{age}")
+//    public List<User> getUserAge(@PathVariable int age) {
+//        return userRepository.getUserAge(age); // Calls the repository method
+////        return true;
+//    }
+
+    @GetMapping("/user/age/{age}")
+    public List<User> getUserAge(@PathVariable int age) {
+        if (age < 0) {
+            throw new IllegalArgumentException("Age must be non-negative");
+        }
+        return userRepository.findUsersByAge(age); // Assumes findByAge exists in repository
+    }
+
     @GetMapping("/user")
     List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @GetMapping("/user/{id}")
-    User updateUser(@RequestParam Long id,@RequestBody User newUser) {
+    @PutMapping("/user/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User newUser) {
         return userRepository.findById(id)
-                .map( user -> {
+                .map(user -> {
                     user.setName(newUser.getName());
                     user.setUsername(newUser.getUsername());
                     user.setEmail(newUser.getEmail());
+                    user.setAge(newUser.getAge());
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
